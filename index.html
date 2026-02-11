@@ -58,7 +58,7 @@
                         box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
                         border-color 0.2s linear,
                         background-color 0.2s linear;
-            box-shadow: 10px 10px 0px 0px var(--lime); 
+            box-shadow: 14px 14px 0px 0px var(--lime);
             
             /* Hitbox Optimization: Ensure it grabs clicks even on edges */
             cursor: pointer;
@@ -281,24 +281,16 @@
             button.appendChild(circle);
         }
 
-        window.copyText = (text, btnElement) => { 
-            // Trigger haptic feedback if available (mobile)
+        window.copyText = async (text) => { 
             if (navigator.vibrate) navigator.vibrate(50);
-            
-            const el = document.createElement('textarea'); 
-            el.value = text; 
-            // FIX: Prevent screen jumping on mobile
-            el.style.position = 'fixed'; 
-            el.style.left = '-9999px'; 
-            el.setAttribute('readonly', '');
-            document.body.appendChild(el); 
-            el.select(); 
-            document.execCommand('copy'); 
-            document.body.removeChild(el); 
-            
-            const toast = document.getElementById('toast'); 
-            toast.classList.remove('hidden'); 
-            setTimeout(() => toast.classList.add('hidden'), 2000); 
+            try {
+                await navigator.clipboard.writeText(text);
+                const toast = document.getElementById('toast'); 
+                toast.classList.remove('hidden'); 
+                setTimeout(() => toast.classList.add('hidden'), 2000);
+            } catch (err) {
+                console.error('Copy failed', err);
+            }
         };
 
         // --- MOUSE TRACKING & PHYSICS ---
