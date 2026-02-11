@@ -39,9 +39,6 @@
         @keyframes brutal-pulse { 0%, 100% { text-shadow: 4px 4px 0px var(--pink); transform: skewX(-10deg) scale(1); } 50% { text-shadow: -4px -4px 0px var(--cyan); transform: skewX(-8deg) scale(1.02); } }
         .brutal-heading { display: inline-block; color: var(--lime); transform: skewX(-10deg); text-shadow: 6px 6px 0px var(--pink); animation: brutal-pulse 4s infinite ease-in-out; }
 
-        /* --- OPTIMIZED HITBOX & INTERACTION ENGINE --- */
-        
-        /* Base Card Styling */
         .connect-card { 
             position: relative;
             border: 6px solid var(--white); 
@@ -52,21 +49,16 @@
             display: flex; 
             flex-direction: column; 
             justify-content: center; 
-            overflow: hidden; /* Contains the shine effect */
-            /* Transition for smooth hover return */
+            overflow: hidden;
             transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
                         box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
-                        border-color 0.2s linear,
-                        background-color 0.2s linear;
+                        border-color 0.2s linear;
             box-shadow: 14px 14px 0px 0px var(--lime);
-            
-            /* Hitbox Optimization: Ensure it grabs clicks even on edges */
             cursor: pointer;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
         }
 
-        /* Hover State - Secondary Layer 1 (Physical Movement) */
         .connect-card:hover { 
             transform: translate(-6px, -6px) rotate(-1deg) scale(1.02); 
             box-shadow: 18px 18px 0px 0px var(--pink); 
@@ -75,119 +67,53 @@
             z-index: 10;
         }
 
-        /* Hover State - Secondary Layer 2 (Scanline Shine) */
         .connect-card::after {
             content: "";
             position: absolute;
-            top: 0;
-            left: -150%;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(
-                90deg, 
-                transparent, 
-                rgba(255, 255, 255, 0.2), 
-                rgba(255, 0, 85, 0.4), 
-                transparent
-            );
-            transform: skewX(-20deg);
-            transition: none;
-            pointer-events: none;
+            top: 0; left: -150%; width: 100%; height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), rgba(255, 0, 85, 0.4), transparent);
+            transform: skewX(-20deg); pointer-events: none;
         }
         
-        .connect-card:hover::after {
-            animation: shine-swipe 0.75s ease-out forwards;
-        }
+        .connect-card:hover::after { animation: shine-swipe 0.75s ease-out forwards; }
 
-        @keyframes shine-swipe {
-            0% { left: -150%; }
-            100% { left: 150%; }
-        }
+        @keyframes shine-swipe { 0% { left: -150%; } 100% { left: 150%; } }
 
-        /* Click/Active State - Tactile Feedback */
         .connect-card:active {
             transform: translate(0px, 0px) scale(0.96) !important;
             box-shadow: 4px 4px 0px 0px var(--cyan) !important;
             border-color: var(--cyan) !important;
-            transition: all 0.05s ease-out; /* Snap fast on click */
         }
 
-        /* Ripple Effect (JS Triggered) */
         .ripple {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.8);
-            transform: scale(0);
-            animation: ripple-anim 0.6s linear;
-            pointer-events: none;
+            position: absolute; border-radius: 50%; background: rgba(255, 255, 255, 0.8);
+            transform: scale(0); animation: ripple-anim 0.6s linear; pointer-events: none;
         }
-        @keyframes ripple-anim {
-            to { transform: scale(4); opacity: 0; }
-        }
+        @keyframes ripple-anim { to { transform: scale(4); opacity: 0; } }
 
-        /* Navigation Optimization */
         .nav-link { 
-            position: relative;
-            padding: 0.75rem 1.25rem; 
-            font-weight: 800; 
-            text-transform: uppercase; 
-            font-size: 0.75rem; 
-            border: 4px solid white; 
-            display: flex; 
-            align-items: center; 
-            gap: 6px; 
-            background: white; 
-            color: black; 
-            box-shadow: 4px 4px 0px rgba(255,255,255,0.2); 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; padding: 0.75rem 1.25rem; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; 
+            border: 4px solid white; display: flex; align-items: center; gap: 6px; background: white; color: black; 
+            box-shadow: 4px 4px 0px rgba(255,255,255,0.2); transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
             overflow: hidden;
         }
-        .nav-link:hover { 
-            background: var(--lime); 
-            transform: scale(1.1) rotate(-1deg) translateY(-2px); 
-            box-shadow: 8px 8px 0px black;
-        }
-        .nav-link:active {
-            transform: scale(0.95) translateY(0);
-            box-shadow: 2px 2px 0px black;
-        }
+        .nav-link:hover { background: var(--lime); transform: scale(1.1) rotate(-1deg) translateY(-2px); box-shadow: 8px 8px 0px black; }
         .nav-active { background: var(--orange) !important; color: white !important; box-shadow: 8px 8px 0px white !important; }
 
-        /* Button Optimization */
         .back-btn { 
-            background: white; 
-            color: black; 
-            border: 4px solid black; 
-            font-weight: 900; 
-            text-transform: uppercase; 
-            box-shadow: 8px 8px 0px var(--lime); 
-            padding: 1.5rem 3rem; 
-            display: inline-block; 
-            cursor: pointer; 
-            width: 100%; 
-            text-align: center; 
-            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            position: relative;
-            overflow: hidden;
+            background: white; color: black; border: 4px solid black; font-weight: 900; text-transform: uppercase; 
+            box-shadow: 8px 8px 0px var(--lime); padding: 1.5rem 3rem; display: inline-block; cursor: pointer; 
+            width: 100%; text-align: center; transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative; overflow: hidden;
         }
-        .back-btn:hover {
-            transform: translate(-4px, -4px);
-            box-shadow: 12px 12px 0px var(--pink);
-            background: var(--lime);
-        }
-        .back-btn:active {
-            transform: translate(0, 0);
-            box-shadow: 4px 4px 0px var(--cyan);
-        }
+        .back-btn:hover { transform: translate(-4px, -4px); box-shadow: 12px 12px 0px var(--pink); background: var(--lime); }
 
         .bubble-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999999; }
         .full-view-container { position: fixed; inset: 0; overflow-y: auto; z-index: 1500; background: black; padding-top: 100px; padding-bottom: 100px; }
-        
         @media (max-width: 640px) { .nav-link span { display: none; } }
     </style>
 </head>
 <body class="antialiased">
-
     <canvas id="bubble-canvas" class="bubble-effect"></canvas>
     <div id="cursor"></div>
 
@@ -204,45 +130,36 @@
 
     <div id="connect-view" class="page-view full-view-container">
         <div class="max-w-6xl mx-auto px-6 space-y-20">
-            <div class="text-center relative group inline-block left-1/2 -translate-x-1/2">     <div class="absolute inset-0 bg-lime-400 blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>     <img src="socials.png" alt="UPLINK" class="relative w-48 md:w-64 mx-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] animate-pulse"> </div>
-            <!-- Added w-full and h-full logic to ensure clickability is maximized -->
+            <div class="text-center relative group inline-block left-1/2 -translate-x-1/2">
+                <div class="absolute inset-0 bg-lime-400 blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>
+                <img src="socials.png" alt="UPLINK" class="relative w-48 md:w-64 mx-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] animate-pulse">
+            </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <!-- Github -->
                 <a href="https://github.com/squiddrilll" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-github text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">GITHUB</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">REPOS ↗</p>
                 </a>
-                
-                <!-- Linkedin -->
                 <a href="https://linkedin.com/in/bhavya-kapatel-9a392a3a7/" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-linkedin text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">LINKEDIN</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">NETWORK ↗</p>
                 </a>
-                
-                <!-- X / Twitter -->
                 <a href="https://x.com/SquidDrill" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-x-twitter text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">X / TWITTER</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">BROADCAST ↗</p>
                 </a>
-                
-                <!-- Instagram -->
                 <a href="https://instagram.com/bhavya.kapatel" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-instagram text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">INSTAGRAM</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">FEED ↗</p>
                 </a>
-                
-                <!-- Discord (Button) -->
-                <button onclick="copyText('squiddrill', this)" class="connect-card text-left w-full group" onmousedown="createRipple(event)">
+                <button onclick="copyText('squiddrill')" class="connect-card text-left w-full group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-discord text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">DISCORD</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">CLICK TO COPY 📋</p>
                 </button>
-                
-                <!-- Email -->
                 <a href="mailto:contact@squiddrill.fun" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-solid fa-envelope text-6xl mb-6 text-lime group-hover:text-black transition-colors duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">EMAIL</h3>
@@ -259,60 +176,69 @@
         <div class="bg-white text-black border-8 border-black px-12 py-6 font-black uppercase text-2xl shadow-[15px_15px_0px_var(--lime)] animate-bounce">COPIED ✅</div>
     </div>
 
-    <script>
-        // --- RIPPLE EFFECT ENGINE ---
-        function createRipple(event) {
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+        import { getFirestore, doc, onSnapshot } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+        
+        const firebaseConfig = { 
+            apiKey: "AIzaSyC-ljBHE316s_9ssHeBjyQ2zF6lpNo93VY", 
+            authDomain: "website-ddb0c.firebaseapp.com", 
+            projectId: "website-ddb0c", 
+            storageBucket: "website-ddb0c.firebasestorage.app", 
+            messagingSenderId: "143641913342", 
+            appId: "1:143641913342:web:ef0f6494e3676d6396c2af" 
+        };
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+        
+        const statsDoc = doc(db, 'artifacts', 'web-page', 'public', 'data', 'stats', 'counters');
+        onSnapshot(statsDoc, (doc) => {
+            const vCountEl = document.querySelector('.mono.text-xs.md\\:text-sm');
+            if (vCountEl) {
+                vCountEl.innerHTML = `Node Social <span class="text-pink-600 animate-pulse">${(doc.data()?.total || 0).toLocaleString()}</span> ⚡`;
+            }
+        });
+        
+        window.createRipple = (event) => {
             const button = event.currentTarget;
             const circle = document.createElement("span");
             const diameter = Math.max(button.clientWidth, button.clientHeight);
             const radius = diameter / 2;
-
-            // Get click coordinates relative to the button
             const rect = button.getBoundingClientRect();
             circle.style.width = circle.style.height = `${diameter}px`;
             circle.style.left = `${event.clientX - rect.left - radius}px`;
             circle.style.top = `${event.clientY - rect.top - radius}px`;
             circle.classList.add("ripple");
-
-            // Remove existing ripples to prevent DOM clutter (optional, but cleaner)
             const ripple = button.getElementsByClassName("ripple")[0];
-            if (ripple) { ripple.remove(); }
-
+            if (ripple) ripple.remove();
             button.appendChild(circle);
-        }
-
+        };
+        
         window.copyText = async (text) => { 
             if (navigator.vibrate) navigator.vibrate(50);
             try {
                 await navigator.clipboard.writeText(text);
                 const toast = document.getElementById('toast'); 
                 toast.classList.remove('hidden'); 
-                setTimeout(() => toast.classList.add('hidden'), 2000);
-            } catch (err) {
-                console.error('Copy failed', err);
-            }
+                setTimeout(() => toast.classList.add('hidden'), 2000); 
+            } catch (err) { console.error('Copy failed', err); }
         };
-
-        // --- MOUSE TRACKING & PHYSICS ---
+        
         document.addEventListener('mousemove', e => { 
             const cursor = document.getElementById('cursor'); 
-            if (cursor) { 
-                cursor.style.left = e.clientX + 'px'; 
-                cursor.style.top = e.clientY + 'px'; 
-            } 
+            if (cursor) { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; } 
         });
-
+        
         document.addEventListener('mousedown', () => {
-             const cursor = document.getElementById('cursor');
-             if(cursor) cursor.style.transform = "scale(0.8)";
+            const cursor = document.getElementById('cursor');
+            if(cursor) cursor.style.transform = "scale(0.8)";
         });
-
+        
         document.addEventListener('mouseup', () => {
-             const cursor = document.getElementById('cursor');
-             if(cursor) cursor.style.transform = "scale(1)";
+            const cursor = document.getElementById('cursor');
+            if(cursor) cursor.style.transform = "scale(1)";
         });
-
-        // --- BUBBLE ENGINE ---
+        
         const bCanvas = document.getElementById('bubble-canvas'); 
         const bCtx = bCanvas.getContext('2d'); 
         let bubbles = [];
@@ -322,44 +248,25 @@
         
         class Bubble { 
             constructor(x, y) { 
-                this.x = x; this.y = y; 
-                this.size = Math.random() * 8 + 4; 
-                this.speedX = Math.random() * 4 - 2; 
-                this.speedY = Math.random() * -4 - 1; 
-                this.opacity = 1; 
-                this.color = ['#C3FF00', '#FF0055', '#00F0FF'][Math.floor(Math.random()*3)]; 
+                this.x = x; this.y = y; this.size = Math.random() * 8 + 4; 
+                this.speedX = Math.random() * 4 - 2; this.speedY = Math.random() * -4 - 1; 
+                this.opacity = 1; this.color = ['#C3FF00', '#FF0055', '#00F0FF'][Math.floor(Math.random()*3)]; 
             } 
-            update() { 
-                this.x += this.speedX; 
-                this.y += this.speedY; 
-                this.opacity -= 0.02; 
-            } 
-            draw() { 
-                bCtx.globalAlpha = this.opacity; 
-                bCtx.beginPath(); 
-                bCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); 
-                bCtx.fillStyle = this.color; 
-                bCtx.fill(); 
-            } 
+            update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.02; } 
+            draw() { bCtx.globalAlpha = this.opacity; bCtx.beginPath(); bCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); bCtx.fillStyle = this.color; bCtx.fill(); } 
         }
         
         function loop() { 
             bCtx.clearRect(0, 0, bCanvas.width, bCanvas.height); 
             for (let i = 0; i < bubbles.length; i++) { 
-                bubbles[i].update(); 
-                bubbles[i].draw(); 
-                if (bubbles[i].opacity <= 0) { 
-                    bubbles.splice(i, 1); 
-                    i--; 
-                } 
+                bubbles[i].update(); bubbles[i].draw(); 
+                if (bubbles[i].opacity <= 0) { bubbles.splice(i, 1); i--; } 
             } 
             requestAnimationFrame(loop); 
         } 
         loop();
         
-        window.addEventListener('mousedown', e => { 
-            for (let i = 0; i < 8; i++) bubbles.push(new Bubble(e.clientX, e.clientY)); 
-        });
+        window.addEventListener('mousedown', e => { for (let i = 0; i < 8; i++) bubbles.push(new Bubble(e.clientX, e.clientY)); });
     </script>
 </body>
 </html>
