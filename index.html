@@ -19,27 +19,159 @@
     <style>
         :root { --bg: #0a0a0a; --white: #ffffff; --lime: #C3FF00; --pink: #FF0055; --cyan: #00F0FF; --orange: #FF5C00; }
         body { font-family: 'Public Sans', sans-serif; background-color: var(--bg); color: var(--white); overflow-x: hidden; background-image: radial-gradient(rgba(255,255,255,0.08) 1.5px, transparent 1.5px); background-size: 35px 35px; }
+        
         @media (pointer: fine) { body { cursor: none; } }
-        #cursor { width: 24px; height: 24px; background: #fff; border-radius: 2px; position: fixed; pointer-events: none; z-index: 1000000; mix-blend-mode: difference; display: none; align-items: center; justify-content: center; }
+        
+        #cursor { width: 24px; height: 24px; background: #fff; border-radius: 2px; position: fixed; pointer-events: none; z-index: 1000000; mix-blend-mode: difference; display: none; align-items: center; justify-content: center; transition: width 0.2s, height 0.2s; }
         @media (pointer: fine) { #cursor { display: flex; } }
+        
         @keyframes brutal-pulse { 0%, 100% { text-shadow: 4px 4px 0px var(--pink); transform: skewX(-10deg) scale(1); } 50% { text-shadow: -4px -4px 0px var(--cyan); transform: skewX(-8deg) scale(1.02); } }
         .brutal-heading { display: inline-block; color: var(--lime); transform: skewX(-10deg); text-shadow: 6px 6px 0px var(--pink); animation: brutal-pulse 4s infinite ease-in-out; }
 
-        /* KINETIC HOVER ENGINE */
-        .nav-link, button, .connect-card, .back-btn { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
-        .nav-link:hover, button:hover, .back-btn:hover { 
-            transform: scale(1.1) rotate(-1deg) translateY(-5px) !important; 
-            background: var(--lime) !important; color: black !important; 
-            box-shadow: 12px 12px 0px var(--pink) !important; border-color: black !important;
+        /* --- OPTIMIZED HITBOX & INTERACTION ENGINE --- */
+        
+        /* Base Card Styling */
+        .connect-card { 
+            position: relative;
+            border: 6px solid var(--white); 
+            padding: 2.5rem; 
+            background: black; 
+            color: white; 
+            min-height: 220px; 
+            display: flex; 
+            flex-direction: column; 
+            justify-content: center; 
+            overflow: hidden; /* Contains the shine effect */
+            /* Transition for smooth hover return */
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                        box-shadow 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275),
+                        border-color 0.2s linear,
+                        background-color 0.2s linear;
+            box-shadow: 10px 10px 0px 0px var(--lime); 
+            
+            /* Hitbox Optimization: Ensure it grabs clicks even on edges */
+            cursor: pointer;
+            user-select: none;
+            -webkit-tap-highlight-color: transparent;
         }
-        .connect-card:hover { transform: translate(-10px, -10px) rotate(-1deg) scale(1.02); box-shadow: 20px 20px 0px 0px var(--pink); border-color: var(--pink); color: var(--pink); }
 
-        .nav-link { padding: 0.75rem 1.25rem; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; border: 4px solid white; display: flex; align-items: center; gap: 6px; background: white; color: black; box-shadow: 4px 4px 0px rgba(255,255,255,0.2); }
+        /* Hover State - Secondary Layer 1 (Physical Movement) */
+        .connect-card:hover { 
+            transform: translate(-6px, -6px) rotate(-1deg) scale(1.02); 
+            box-shadow: 18px 18px 0px 0px var(--pink); 
+            border-color: var(--pink); 
+            color: var(--pink); 
+            z-index: 10;
+        }
+
+        /* Hover State - Secondary Layer 2 (Scanline Shine) */
+        .connect-card::after {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -150%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                90deg, 
+                transparent, 
+                rgba(255, 255, 255, 0.2), 
+                rgba(255, 0, 85, 0.4), 
+                transparent
+            );
+            transform: skewX(-20deg);
+            transition: none;
+            pointer-events: none;
+        }
+        
+        .connect-card:hover::after {
+            animation: shine-swipe 0.75s ease-out forwards;
+        }
+
+        @keyframes shine-swipe {
+            0% { left: -150%; }
+            100% { left: 150%; }
+        }
+
+        /* Click/Active State - Tactile Feedback */
+        .connect-card:active {
+            transform: translate(0px, 0px) scale(0.96) !important;
+            box-shadow: 4px 4px 0px 0px var(--cyan) !important;
+            border-color: var(--cyan) !important;
+            transition: all 0.05s ease-out; /* Snap fast on click */
+        }
+
+        /* Ripple Effect (JS Triggered) */
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.8);
+            transform: scale(0);
+            animation: ripple-anim 0.6s linear;
+            pointer-events: none;
+        }
+        @keyframes ripple-anim {
+            to { transform: scale(4); opacity: 0; }
+        }
+
+        /* Navigation Optimization */
+        .nav-link { 
+            position: relative;
+            padding: 0.75rem 1.25rem; 
+            font-weight: 800; 
+            text-transform: uppercase; 
+            font-size: 0.75rem; 
+            border: 4px solid white; 
+            display: flex; 
+            align-items: center; 
+            gap: 6px; 
+            background: white; 
+            color: black; 
+            box-shadow: 4px 4px 0px rgba(255,255,255,0.2); 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            overflow: hidden;
+        }
+        .nav-link:hover { 
+            background: var(--lime); 
+            transform: scale(1.1) rotate(-1deg) translateY(-2px); 
+            box-shadow: 8px 8px 0px black;
+        }
+        .nav-link:active {
+            transform: scale(0.95) translateY(0);
+            box-shadow: 2px 2px 0px black;
+        }
         .nav-active { background: var(--orange) !important; color: white !important; box-shadow: 8px 8px 0px white !important; }
-        .connect-card { border: 6px solid var(--white); padding: 2.5rem; background: black; color: white; transition: all 0.3s; box-shadow: 10px 10px 0px 0px var(--lime); min-height: 220px; display: flex; flex-direction: column; justify-content: center; }
+
+        /* Button Optimization */
+        .back-btn { 
+            background: white; 
+            color: black; 
+            border: 4px solid black; 
+            font-weight: 900; 
+            text-transform: uppercase; 
+            box-shadow: 8px 8px 0px var(--lime); 
+            padding: 1.5rem 3rem; 
+            display: inline-block; 
+            cursor: pointer; 
+            width: 100%; 
+            text-align: center; 
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+        }
+        .back-btn:hover {
+            transform: translate(-4px, -4px);
+            box-shadow: 12px 12px 0px var(--pink);
+            background: var(--lime);
+        }
+        .back-btn:active {
+            transform: translate(0, 0);
+            box-shadow: 4px 4px 0px var(--cyan);
+        }
+
         .bubble-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999999; }
         .full-view-container { position: fixed; inset: 0; overflow-y: auto; z-index: 1500; background: black; padding-top: 100px; padding-bottom: 100px; }
-        .back-btn { background: white; color: black; border: 4px solid black; font-weight: 900; text-transform: uppercase; box-shadow: 8px 8px 0px var(--lime); padding: 1.5rem 3rem; display: inline-block; cursor: pointer; width: 100%; text-align: center; }
+        
         @media (max-width: 640px) { .nav-link span { display: none; } }
     </style>
 </head>
@@ -50,7 +182,7 @@
 
     <nav class="fixed top-0 left-0 w-full z-[2000] bg-black border-b-8 border-white px-6 py-5 flex justify-between items-center">
         <div class="flex items-center gap-4">
-            <span class="mono text-xs md:text-sm font-black bg-white text-black px-4 py-2 uppercase">Socials ⚡</span>
+            <span class="mono text-xs md:text-sm font-black bg-white text-black px-4 py-2 uppercase select-none">Socials ⚡</span>
         </div>
         <div class="flex gap-2 sm:gap-3">
             <a href="https://squiddrill.fun" class="nav-link"><i class="fa-solid fa-house"></i> <span>Home</span></a>
@@ -61,31 +193,166 @@
 
     <div id="connect-view" class="page-view full-view-container">
         <div class="max-w-6xl mx-auto px-6 space-y-20">
-            <h2 class="text-5xl md:text-7xl font-black uppercase italic text-center tracking-tighter brutal-heading">Uplink</h2>
+            <h2 class="text-5xl md:text-7xl font-black uppercase italic text-center tracking-tighter brutal-heading select-none">Uplink</h2>
+            <!-- Added w-full and h-full logic to ensure clickability is maximized -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-                <a href="https://github.com/squiddrilll" target="_blank" class="connect-card"><i class="fa-brands fa-github text-6xl mb-6"></i><h3 class="text-3xl font-black uppercase">GITHUB</h3><p class="mono text-xs opacity-50 mt-4">REPOS ↗</p></a>
-                <a href="https://linkedin.com/in/bhavya-kapatel-9a392a3a7/" target="_blank" class="connect-card"><i class="fa-brands fa-linkedin text-6xl mb-6"></i><h3 class="text-3xl font-black uppercase">LINKEDIN</h3><p class="mono text-xs opacity-50 mt-4">NETWORK ↗</p></a>
-                <a href="https://x.com/SquidDrill" target="_blank" class="connect-card"><i class="fa-brands fa-x-twitter text-6xl mb-6"></i><h3 class="text-3xl font-black uppercase">X / TWITTER</h3><p class="mono text-xs opacity-50 mt-4">BROADCAST ↗</p></a>
-                <a href="https://instagram.com/bhavya.kapatel" target="_blank" class="connect-card"><i class="fa-brands fa-instagram text-6xl mb-6"></i><h3 class="text-3xl font-black uppercase">INSTAGRAM</h3><p class="mono text-xs opacity-50 mt-4">FEED ↗</p></a>
-                <button onclick="copyText('squiddrill', this)" class="connect-card text-left"><i class="fa-brands fa-discord text-6xl mb-6"></i><h3 class="text-3xl font-black uppercase">DISCORD</h3><p class="mono text-xs opacity-50 mt-4">CLICK TO COPY 📋</p></button>
-                <a href="mailto:contact@squiddrill.fun" target="_blank" class="connect-card"><i class="fa-solid fa-envelope text-6xl mb-6 text-lime"></i><h3 class="text-3xl font-black uppercase">EMAIL</h3><p class="mono text-xs opacity-50 mt-4">SEND MSG ✉️</p></a>
+                <!-- Github -->
+                <a href="https://github.com/squiddrilll" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                    <i class="fa-brands fa-github text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
+                    <h3 class="text-3xl font-black uppercase">GITHUB</h3>
+                    <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">REPOS ↗</p>
+                </a>
+                
+                <!-- Linkedin -->
+                <a href="https://linkedin.com/in/bhavya-kapatel-9a392a3a7/" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                    <i class="fa-brands fa-linkedin text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
+                    <h3 class="text-3xl font-black uppercase">LINKEDIN</h3>
+                    <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">NETWORK ↗</p>
+                </a>
+                
+                <!-- X / Twitter -->
+                <a href="https://x.com/SquidDrill" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                    <i class="fa-brands fa-x-twitter text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
+                    <h3 class="text-3xl font-black uppercase">X / TWITTER</h3>
+                    <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">BROADCAST ↗</p>
+                </a>
+                
+                <!-- Instagram -->
+                <a href="https://instagram.com/bhavya.kapatel" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                    <i class="fa-brands fa-instagram text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
+                    <h3 class="text-3xl font-black uppercase">INSTAGRAM</h3>
+                    <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">FEED ↗</p>
+                </a>
+                
+                <!-- Discord (Button) -->
+                <button onclick="copyText('squiddrill', this)" class="connect-card text-left w-full group" onmousedown="createRipple(event)">
+                    <i class="fa-brands fa-discord text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
+                    <h3 class="text-3xl font-black uppercase">DISCORD</h3>
+                    <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">CLICK TO COPY 📋</p>
+                </button>
+                
+                <!-- Email -->
+                <a href="mailto:contact@squiddrill.fun" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                    <i class="fa-solid fa-envelope text-6xl mb-6 text-lime group-hover:text-black transition-colors duration-300"></i>
+                    <h3 class="text-3xl font-black uppercase">EMAIL</h3>
+                    <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">SEND MSG ✉️</p>
+                </a>
             </div>
-            <div class="text-center pb-20"><a href="https://squiddrill.fun" class="text-3xl back-btn max-w-sm">RETURN HOME</a></div>
+            <div class="text-center pb-20">
+                <a href="https://squiddrill.fun" class="text-3xl back-btn max-w-sm" onmousedown="createRipple(event)">RETURN HOME</a>
+            </div>
         </div>
     </div>
 
-    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 hidden z-[5000]">
-        <div class="bg-white text-black border-8 border-black px-12 py-6 font-black uppercase text-2xl shadow-[15px_15px_0px_var(--lime)]">COPIED ✅</div>
+    <div id="toast" class="fixed bottom-12 left-1/2 -translate-x-1/2 hidden z-[5000] pointer-events-none">
+        <div class="bg-white text-black border-8 border-black px-12 py-6 font-black uppercase text-2xl shadow-[15px_15px_0px_var(--lime)] animate-bounce">COPIED ✅</div>
     </div>
 
     <script>
-        window.copyText = (text) => { const el = document.createElement('textarea'); el.value = text; document.body.appendChild(el); el.select(); document.execCommand('copy'); document.body.removeChild(el); const toast = document.getElementById('toast'); toast.classList.remove('hidden'); setTimeout(() => toast.classList.add('hidden'), 2000); };
-        document.addEventListener('mousemove', e => { const cursor = document.getElementById('cursor'); if (cursor) { cursor.style.left = e.clientX + 'px'; cursor.style.top = e.clientY + 'px'; } });
-        const bCanvas = document.getElementById('bubble-canvas'); const bCtx = bCanvas.getContext('2d'); let bubbles = [];
-        const resize = () => { bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight; }; resize(); window.addEventListener('resize', resize);
-        class Bubble { constructor(x, y) { this.x = x; this.y = y; this.size = Math.random() * 8 + 4; this.speedX = Math.random() * 4 - 2; this.speedY = Math.random() * -4 - 1; this.opacity = 1; this.color = ['#C3FF00', '#FF0055', '#00F0FF'][Math.floor(Math.random()*3)]; } update() { this.x += this.speedX; this.y += this.speedY; this.opacity -= 0.02; } draw() { bCtx.globalAlpha = this.opacity; bCtx.beginPath(); bCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); bCtx.fillStyle = this.color; bCtx.fill(); } }
-        function loop() { bCtx.clearRect(0, 0, bCanvas.width, bCanvas.height); for (let i = 0; i < bubbles.length; i++) { bubbles[i].update(); bubbles[i].draw(); if (bubbles[i].opacity <= 0) { bubbles.splice(i, 1); i--; } } requestAnimationFrame(loop); } loop();
-        window.addEventListener('mousedown', e => { for (let i = 0; i < 8; i++) bubbles.push(new Bubble(e.clientX, e.clientY)); });
+        // --- RIPPLE EFFECT ENGINE ---
+        function createRipple(event) {
+            const button = event.currentTarget;
+            const circle = document.createElement("span");
+            const diameter = Math.max(button.clientWidth, button.clientHeight);
+            const radius = diameter / 2;
+
+            // Get click coordinates relative to the button
+            const rect = button.getBoundingClientRect();
+            circle.style.width = circle.style.height = `${diameter}px`;
+            circle.style.left = `${event.clientX - rect.left - radius}px`;
+            circle.style.top = `${event.clientY - rect.top - radius}px`;
+            circle.classList.add("ripple");
+
+            // Remove existing ripples to prevent DOM clutter (optional, but cleaner)
+            const ripple = button.getElementsByClassName("ripple")[0];
+            if (ripple) { ripple.remove(); }
+
+            button.appendChild(circle);
+        }
+
+        window.copyText = (text, btnElement) => { 
+            // Trigger haptic feedback if available (mobile)
+            if (navigator.vibrate) navigator.vibrate(50);
+            
+            const el = document.createElement('textarea'); 
+            el.value = text; 
+            document.body.appendChild(el); 
+            el.select(); 
+            document.execCommand('copy'); 
+            document.body.removeChild(el); 
+            
+            const toast = document.getElementById('toast'); 
+            toast.classList.remove('hidden'); 
+            setTimeout(() => toast.classList.add('hidden'), 2000); 
+        };
+
+        // --- MOUSE TRACKING & PHYSICS ---
+        document.addEventListener('mousemove', e => { 
+            const cursor = document.getElementById('cursor'); 
+            if (cursor) { 
+                cursor.style.left = e.clientX + 'px'; 
+                cursor.style.top = e.clientY + 'px'; 
+            } 
+        });
+
+        document.addEventListener('mousedown', () => {
+             const cursor = document.getElementById('cursor');
+             if(cursor) cursor.style.transform = "scale(0.8)";
+        });
+
+        document.addEventListener('mouseup', () => {
+             const cursor = document.getElementById('cursor');
+             if(cursor) cursor.style.transform = "scale(1)";
+        });
+
+        // --- BUBBLE ENGINE ---
+        const bCanvas = document.getElementById('bubble-canvas'); 
+        const bCtx = bCanvas.getContext('2d'); 
+        let bubbles = [];
+        const resize = () => { bCanvas.width = window.innerWidth; bCanvas.height = window.innerHeight; }; 
+        resize(); 
+        window.addEventListener('resize', resize);
+        
+        class Bubble { 
+            constructor(x, y) { 
+                this.x = x; this.y = y; 
+                this.size = Math.random() * 8 + 4; 
+                this.speedX = Math.random() * 4 - 2; 
+                this.speedY = Math.random() * -4 - 1; 
+                this.opacity = 1; 
+                this.color = ['#C3FF00', '#FF0055', '#00F0FF'][Math.floor(Math.random()*3)]; 
+            } 
+            update() { 
+                this.x += this.speedX; 
+                this.y += this.speedY; 
+                this.opacity -= 0.02; 
+            } 
+            draw() { 
+                bCtx.globalAlpha = this.opacity; 
+                bCtx.beginPath(); 
+                bCtx.arc(this.x, this.y, this.size, 0, Math.PI * 2); 
+                bCtx.fillStyle = this.color; 
+                bCtx.fill(); 
+            } 
+        }
+        
+        function loop() { 
+            bCtx.clearRect(0, 0, bCanvas.width, bCanvas.height); 
+            for (let i = 0; i < bubbles.length; i++) { 
+                bubbles[i].update(); 
+                bubbles[i].draw(); 
+                if (bubbles[i].opacity <= 0) { 
+                    bubbles.splice(i, 1); 
+                    i--; 
+                } 
+            } 
+            requestAnimationFrame(loop); 
+        } 
+        loop();
+        
+        window.addEventListener('mousedown', e => { 
+            for (let i = 0; i < 8; i++) bubbles.push(new Bubble(e.clientX, e.clientY)); 
+        });
     </script>
 </body>
 </html>
