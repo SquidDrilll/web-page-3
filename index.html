@@ -195,7 +195,7 @@
         onSnapshot(statsDoc, (doc) => {
             const vCountEl = document.querySelector('.mono.text-xs.md\\:text-sm');
             if (vCountEl) {
-                vCountEl.innerHTML = `Node Social <span class="text-pink-600 animate-pulse">${(doc.data()?.total || 0).toLocaleString()}</span> ⚡`;
+                vCountEl.innerHTML = `Social Visits <span class="text-pink-600 animate-pulse">${(doc.data()?.total || 0).toLocaleString()}</span> ⚡`;
             }
         });
         
