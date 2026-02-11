@@ -22,7 +22,18 @@
         
         @media (pointer: fine) { body { cursor: none; } }
         
-        #cursor { width: 24px; height: 24px; background: #fff; border-radius: 2px; position: fixed; pointer-events: none; z-index: 1000000; mix-blend-mode: difference; display: none; align-items: center; justify-content: center; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), width 0.2s, height 0.2s; }
+        #cursor { 
+            width: 30px; height: 30px; 
+            border: 2px solid var(--lime); 
+            border-radius: 50%; 
+            position: fixed; pointer-events: none; z-index: 1000000; 
+            display: none; align-items: center; justify-content: center; 
+            transition: transform 0.1s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            mix-blend-mode: difference;
+        }
+        #cursor::after {
+            content: ''; width: 4px; height: 4px; background: var(--pink); border-radius: 50%;
+        }
         @media (pointer: fine) { #cursor { display: flex; } }
         
         @keyframes brutal-pulse { 0%, 100% { text-shadow: 4px 4px 0px var(--pink); transform: skewX(-10deg) scale(1); } 50% { text-shadow: -4px -4px 0px var(--cyan); transform: skewX(-8deg) scale(1.02); } }
