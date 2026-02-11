@@ -22,7 +22,7 @@
         
         @media (pointer: fine) { body { cursor: none; } }
         
-        #cursor { width: 24px; height: 24px; background: #fff; border-radius: 2px; position: fixed; pointer-events: none; z-index: 1000000; mix-blend-mode: difference; display: none; align-items: center; justify-content: center; transition: width 0.2s, height 0.2s; }
+        #cursor { width: 24px; height: 24px; background: #fff; border-radius: 2px; position: fixed; pointer-events: none; z-index: 1000000; mix-blend-mode: difference; display: none; align-items: center; justify-content: center; transition: transform 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275), width 0.2s, height 0.2s; }
         @media (pointer: fine) { #cursor { display: flex; } }
         
         @keyframes brutal-pulse { 0%, 100% { text-shadow: 4px 4px 0px var(--pink); transform: skewX(-10deg) scale(1); } 50% { text-shadow: -4px -4px 0px var(--cyan); transform: skewX(-8deg) scale(1.02); } }
@@ -193,32 +193,32 @@
 
     <div id="connect-view" class="page-view full-view-container">
         <div class="max-w-6xl mx-auto px-6 space-y-20">
-            <h2 class="text-5xl md:text-7xl font-black uppercase italic text-center tracking-tighter brutal-heading select-none">Uplink</h2>
+            <div class="text-center relative group inline-block left-1/2 -translate-x-1/2">     <div class="absolute inset-0 bg-lime-400 blur-[40px] opacity-20 group-hover:opacity-40 transition-opacity duration-500"></div>     <img src="socials.png" alt="UPLINK" class="relative w-48 md:w-64 mx-auto drop-shadow-[0_0_10px_rgba(255,255,255,0.3)] animate-pulse"> </div>
             <!-- Added w-full and h-full logic to ensure clickability is maximized -->
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
                 <!-- Github -->
-                <a href="https://github.com/squiddrilll" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                <a href="https://github.com/squiddrilll" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-github text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">GITHUB</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">REPOS ↗</p>
                 </a>
                 
                 <!-- Linkedin -->
-                <a href="https://linkedin.com/in/bhavya-kapatel-9a392a3a7/" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                <a href="https://linkedin.com/in/bhavya-kapatel-9a392a3a7/" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-linkedin text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">LINKEDIN</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">NETWORK ↗</p>
                 </a>
                 
                 <!-- X / Twitter -->
-                <a href="https://x.com/SquidDrill" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                <a href="https://x.com/SquidDrill" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-x-twitter text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">X / TWITTER</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">BROADCAST ↗</p>
                 </a>
                 
                 <!-- Instagram -->
-                <a href="https://instagram.com/bhavya.kapatel" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                <a href="https://instagram.com/bhavya.kapatel" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-brands fa-instagram text-6xl mb-6 group-hover:scale-110 transition-transform duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">INSTAGRAM</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">FEED ↗</p>
@@ -232,7 +232,7 @@
                 </button>
                 
                 <!-- Email -->
-                <a href="mailto:contact@squiddrill.fun" target="_blank" class="connect-card group" onmousedown="createRipple(event)">
+                <a href="mailto:contact@squiddrill.fun" target="_blank" rel="noopener noreferrer" class="connect-card group" onmousedown="createRipple(event)">
                     <i class="fa-solid fa-envelope text-6xl mb-6 text-lime group-hover:text-black transition-colors duration-300"></i>
                     <h3 class="text-3xl font-black uppercase">EMAIL</h3>
                     <p class="mono text-xs opacity-50 mt-4 group-hover:opacity-100 group-hover:text-black bg-transparent group-hover:bg-white inline-block w-max px-2">SEND MSG ✉️</p>
@@ -276,6 +276,10 @@
             
             const el = document.createElement('textarea'); 
             el.value = text; 
+            // FIX: Prevent screen jumping on mobile
+            el.style.position = 'fixed'; 
+            el.style.left = '-9999px'; 
+            el.setAttribute('readonly', '');
             document.body.appendChild(el); 
             el.select(); 
             document.execCommand('copy'); 
