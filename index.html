@@ -24,11 +24,19 @@
         @media (pointer: fine) { #cursor { display: flex; } }
         @keyframes brutal-pulse { 0%, 100% { text-shadow: 4px 4px 0px var(--pink); transform: skewX(-10deg) scale(1); } 50% { text-shadow: -4px -4px 0px var(--cyan); transform: skewX(-8deg) scale(1.02); } }
         .brutal-heading { display: inline-block; color: var(--lime); transform: skewX(-10deg); text-shadow: 6px 6px 0px var(--pink); animation: brutal-pulse 4s infinite ease-in-out; }
+
+        /* KINETIC HOVER ENGINE */
+        .nav-link, button, .connect-card, .back-btn { transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275); }
+        .nav-link:hover, button:hover, .back-btn:hover { 
+            transform: scale(1.1) rotate(-1deg) translateY(-5px) !important; 
+            background: var(--lime) !important; color: black !important; 
+            box-shadow: 12px 12px 0px var(--pink) !important; border-color: black !important;
+        }
+        .connect-card:hover { transform: translate(-10px, -10px) rotate(-1deg) scale(1.02); box-shadow: 20px 20px 0px 0px var(--pink); border-color: var(--pink); color: var(--pink); }
+
         .nav-link { padding: 0.75rem 1.25rem; font-weight: 800; text-transform: uppercase; font-size: 0.75rem; border: 4px solid white; display: flex; align-items: center; gap: 6px; background: white; color: black; box-shadow: 4px 4px 0px rgba(255,255,255,0.2); }
-        .nav-link:hover { background: var(--lime); transform: scale(1.1) rotate(-1deg); }
         .nav-active { background: var(--orange) !important; color: white !important; box-shadow: 8px 8px 0px white !important; }
         .connect-card { border: 6px solid var(--white); padding: 2.5rem; background: black; color: white; transition: all 0.3s; box-shadow: 10px 10px 0px 0px var(--lime); min-height: 220px; display: flex; flex-direction: column; justify-content: center; }
-        .connect-card:hover { transform: translate(-10px, -10px) rotate(-1deg); box-shadow: 20px 20px 0px 0px var(--pink); border-color: var(--pink); color: var(--pink); }
         .bubble-effect { position: fixed; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 999999; }
         .full-view-container { position: fixed; inset: 0; overflow-y: auto; z-index: 1500; background: black; padding-top: 100px; padding-bottom: 100px; }
         .back-btn { background: white; color: black; border: 4px solid black; font-weight: 900; text-transform: uppercase; box-shadow: 8px 8px 0px var(--lime); padding: 1.5rem 3rem; display: inline-block; cursor: pointer; width: 100%; text-align: center; }
@@ -42,7 +50,7 @@
 
     <nav class="fixed top-0 left-0 w-full z-[2000] bg-black border-b-8 border-white px-6 py-5 flex justify-between items-center">
         <div class="flex items-center gap-4">
-            <span class="mono text-xs md:text-sm font-black bg-white text-black px-4 py-2 uppercase">Social ⚡</span>
+            <span class="mono text-xs md:text-sm font-black bg-white text-black px-4 py-2 uppercase">Socials ⚡</span>
         </div>
         <div class="flex gap-2 sm:gap-3">
             <a href="https://squiddrill.fun" class="nav-link"><i class="fa-solid fa-house"></i> <span>Home</span></a>
